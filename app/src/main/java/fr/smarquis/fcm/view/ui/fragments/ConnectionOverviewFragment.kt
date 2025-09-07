@@ -1,13 +1,17 @@
 package fr.smarquis.fcm.view.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import fr.smarquis.fcm.R
+import fr.smarquis.fcm.data.model.ConnectionHistory
 import fr.smarquis.fcm.data.model.ConnectionStats
+import fr.smarquis.fcm.data.model.ConnectionStatus
+import fr.smarquis.fcm.data.model.NetworkType
 import fr.smarquis.fcm.data.repository.ConnectionHistoryRepository
 import fr.smarquis.fcm.databinding.FragmentConnectionOverviewBinding
 import kotlinx.coroutines.launch
@@ -35,6 +39,10 @@ class ConnectionOverviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 添加测试数据（仅用于调试）
+        insertTestDataIfNeeded()
+
         loadConnectionStats()
     }
 
@@ -46,10 +54,13 @@ class ConnectionOverviewFragment : Fragment() {
     private fun loadConnectionStats() {
         lifecycleScope.launch {
             try {
+                Log.d("ConnectionOverview", "Loading connection stats...")
                 val stats = repository.getConnectionStats()
+                Log.d("ConnectionOverview", "Stats loaded: $stats")
                 updateUI(stats)
             } catch (e: Exception) {
                 // 处理错误
+                Log.e("ConnectionOverview", "Error loading stats", e)
                 e.printStackTrace()
             }
         }
@@ -105,6 +116,57 @@ class ConnectionOverviewFragment : Fragment() {
                 }
             }
             else -> getString(R.string.time_format_seconds, seconds)
+        }
+    }
+
+    private fun insertTestDataIfNeeded() {
+        lifecycleScope.launch {
+            try {
+                // 检查是否已有数据
+                val existingStats = repository.getConnectionStats()
+                if (existingStats.connectionCount == 0) {
+                    Log.d("ConnectionOverview", "Inserting test data...")
+
+                    val currentTime = System.currentTimeMillis()
+                    val testData = listOf(
+                        // 连接记录
+                        ConnectionHistory(
+                            timestamp = currentTime - 3600000, // 1小时前
+                            status = ConnectionStatus.CONNECTED,
+                            networkType = NetworkType.WIFI,
+                            deviceInfo = "Test Device"
+                        ),
+                        // 断开记录（包含持续时间）
+                        ConnectionHistory(
+                            timestamp = currentTime - 1800000, // 30分钟前
+                            status = ConnectionStatus.DISCONNECTED,
+                            networkType = NetworkType.WIFI,
+                            duration = 1800000, // 30分钟连接时长
+                            deviceInfo = "Test Device"
+                        ),
+                        // 另一次连接
+                        ConnectionHistory(
+                            timestamp = currentTime - 900000, // 15分钟前
+                            status = ConnectionStatus.CONNECTED,
+                            networkType = NetworkType.MOBILE,
+                            deviceInfo = "Test Device"
+                        ),
+                        // 另一次断开
+                        ConnectionHistory(
+                            timestamp = currentTime - 300000, // 5分钟前
+                            status = ConnectionStatus.DISCONNECTED,
+                            networkType = NetworkType.MOBILE,
+                            duration = 600000, // 10分钟连接时长
+                            deviceInfo = "Test Device"
+                        )
+                    )
+
+                    repository.insertAll(testData)
+                    Log.d("ConnectionOverview", "Test data inserted successfully")
+                }
+            } catch (e: Exception) {
+                Log.e("ConnectionOverview", "Error inserting test data", e)
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package fr.smarquis.fcm.view.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,7 @@ class ConnectionHistoryFragment : Fragment() {
     private fun loadConnectionHistory() {
         lifecycleScope.launch {
             repository.getRecentHistory(100).collectLatest { historyList ->
+                Log.d("ConnectionHistory", "Loaded ${historyList.size} history records")
                 adapter.submitList(historyList)
                 binding.emptyView.visibility = if (historyList.isEmpty()) View.VISIBLE else View.GONE
             }

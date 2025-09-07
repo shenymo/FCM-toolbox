@@ -30,10 +30,11 @@ class ConnectionHistoryRepository(private val dao: ConnectionHistoryDao) {
     suspend fun deleteAll() = dao.deleteAll()
 
     suspend fun getConnectionStats(): ConnectionStats {
-        val totalOnlineTime = dao.getTotalDurationByStatus(ConnectionStatus.CONNECTED) ?: 0L
+        // 持续时间信息存储在DISCONNECTED记录中
+        val totalOnlineTime = dao.getTotalDurationByStatus(ConnectionStatus.DISCONNECTED) ?: 0L
         val connectionCount = dao.getCountByStatus(ConnectionStatus.CONNECTED)
-        val averageConnectionDuration = dao.getAverageDurationByStatus(ConnectionStatus.CONNECTED) ?: 0L
-        val longestConnection = dao.getMaxDurationByStatus(ConnectionStatus.CONNECTED) ?: 0L
+        val averageConnectionDuration = dao.getAverageDurationByStatus(ConnectionStatus.DISCONNECTED) ?: 0L
+        val longestConnection = dao.getMaxDurationByStatus(ConnectionStatus.DISCONNECTED) ?: 0L
         val disconnectionCount = dao.getCountByStatus(ConnectionStatus.DISCONNECTED)
         val lastConnectionTime = dao.getLastConnectionTime(ConnectionStatus.CONNECTED)
 
@@ -49,7 +50,7 @@ class ConnectionHistoryRepository(private val dao: ConnectionHistoryDao) {
         val endOfDay = calendar.timeInMillis - 1
 
         val connectionsToday = dao.getTodayCountByStatus(ConnectionStatus.CONNECTED, startOfDay, endOfDay)
-        val onlineTimeToday = dao.getTodayDurationByStatus(ConnectionStatus.CONNECTED, startOfDay, endOfDay) ?: 0L
+        val onlineTimeToday = dao.getTodayDurationByStatus(ConnectionStatus.DISCONNECTED, startOfDay, endOfDay) ?: 0L
 
         return ConnectionStats(
             totalOnlineTime = totalOnlineTime,
@@ -82,7 +83,7 @@ class ConnectionHistoryRepository(private val dao: ConnectionHistoryDao) {
 
             val dateString = dateFormat.format(Date(startOfDay))
             val connectionCount = dao.getTodayCountByStatus(ConnectionStatus.CONNECTED, startOfDay, endOfDay)
-            val onlineTime = dao.getTodayDurationByStatus(ConnectionStatus.CONNECTED, startOfDay, endOfDay) ?: 0L
+            val onlineTime = dao.getTodayDurationByStatus(ConnectionStatus.DISCONNECTED, startOfDay, endOfDay) ?: 0L
             val averageDuration = if (connectionCount > 0) onlineTime / connectionCount else 0L
 
             result.add(

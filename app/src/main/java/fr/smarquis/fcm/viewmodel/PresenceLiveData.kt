@@ -3,6 +3,7 @@ package fr.smarquis.fcm.viewmodel
 import android.app.Application
 import android.os.Build.MANUFACTURER
 import android.os.Build.MODEL
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -55,6 +56,7 @@ class PresenceLiveData(
         presenceRef.addValueEventListener(this)
         DatabaseReference.goOnline()
         updateMetadata()
+        Log.d("PresenceLiveData", "onActive called")
     }
 
     override fun onInactive() {
@@ -104,6 +106,8 @@ class PresenceLiveData(
             val networkType = NetworkUtils.getCurrentNetworkType(application)
             val deviceInfo = if (MODEL.lowercase().startsWith(MANUFACTURER.lowercase())) MODEL else "$MANUFACTURER $MODEL"
 
+            Log.d("PresenceLiveData", "Recording connection change: $newPresence, networkType: $networkType")
+
             when (newPresence) {
                 is Online -> {
                     // 记录连接事件
@@ -115,6 +119,7 @@ class PresenceLiveData(
                     )
                     connectionHistoryRepository.insert(connectionHistory)
                     lastConnectionTime = currentTime
+                    Log.d("PresenceLiveData", "Inserted connection record: $connectionHistory")
                 }
                 is Offline -> {
                     // 记录断开事件，并计算连接持续时间
@@ -127,6 +132,7 @@ class PresenceLiveData(
                         deviceInfo = deviceInfo
                     )
                     connectionHistoryRepository.insert(disconnectionHistory)
+                    Log.d("PresenceLiveData", "Inserted disconnection record: $disconnectionHistory, duration: $duration")
 
                     // 如果有连接时间，更新最后一次连接记录的持续时间
                     if (duration != null && lastConnectionTime != null) {
