@@ -182,6 +182,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_invalidate_token -> viewModel.resetToken()
             R.id.action_topics -> showTopicsDialog()
             R.id.action_delete_all -> showDeleteDialog()
+            R.id.action_connection_analysis -> openConnectionAnalysis()
             R.id.action_diagnostics -> openDiagnostics()
         }
         return super.onOptionsItemSelected(item)
@@ -237,6 +238,11 @@ class MainActivity : AppCompatActivity() {
         // Trigger afterTextChanged()
         binding.inputText.text = null
         binding.inputText.requestFocus()
+    }
+
+    private fun openConnectionAnalysis() {
+        val intent = Intent(this, ConnectionAnalysisActivity::class.java)
+        startActivity(intent)
     }
 
     /**

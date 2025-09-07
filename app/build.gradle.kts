@@ -69,6 +69,8 @@ dependencies {
     implementation(libs.androidx.preference.ktx)
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.transition)
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.androidx.fragment.ktx)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.test.ext.junit)
 

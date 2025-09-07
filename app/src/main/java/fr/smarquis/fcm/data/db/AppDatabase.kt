@@ -8,16 +8,22 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import fr.smarquis.fcm.data.db.AppDatabase.MapConverter
 import fr.smarquis.fcm.data.db.AppDatabase.PayloadConverter
+import fr.smarquis.fcm.data.db.AppDatabase.ConnectionStatusConverter
+import fr.smarquis.fcm.data.db.AppDatabase.NetworkTypeConverter
+import fr.smarquis.fcm.data.model.ConnectionHistory
+import fr.smarquis.fcm.data.model.ConnectionStatus
 import fr.smarquis.fcm.data.model.Message
+import fr.smarquis.fcm.data.model.NetworkType
 import fr.smarquis.fcm.data.model.Payload
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-@Database(entities = [Message::class], version = 1)
-@TypeConverters(value = [MapConverter::class, PayloadConverter::class])
+@Database(entities = [Message::class, ConnectionHistory::class], version = 2)
+@TypeConverters(value = [MapConverter::class, PayloadConverter::class, ConnectionStatusConverter::class, NetworkTypeConverter::class])
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun dao(): MessageDao
+    abstract fun connectionHistoryDao(): ConnectionHistoryDao
 
     object PayloadConverter : KoinComponent {
 
@@ -47,6 +53,26 @@ abstract class AppDatabase : RoomDatabase() {
         @JvmStatic
         fun mapToString(map: Map<String, String>?): String = adapter.toJson(map)
 
+    }
+
+    object ConnectionStatusConverter {
+        @TypeConverter
+        @JvmStatic
+        fun fromConnectionStatus(status: ConnectionStatus): String = status.name
+
+        @TypeConverter
+        @JvmStatic
+        fun toConnectionStatus(status: String): ConnectionStatus = ConnectionStatus.valueOf(status)
+    }
+
+    object NetworkTypeConverter {
+        @TypeConverter
+        @JvmStatic
+        fun fromNetworkType(type: NetworkType?): String? = type?.name
+
+        @TypeConverter
+        @JvmStatic
+        fun toNetworkType(type: String?): NetworkType? = type?.let { NetworkType.valueOf(it) }
     }
 
 }

@@ -21,6 +21,7 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".App"
@@ -58,6 +59,12 @@
         <activity
             android:name=".view.ui.CopyToClipboardActivity"
             android:theme="@android:style/Theme.NoDisplay" />
+
+        <activity
+            android:name=".view.ui.ConnectionAnalysisActivity"
+            android:exported="false"
+            android:parentActivityName=".view.ui.MainActivity"
+            android:theme="@style/AppTheme" />
 
     </application>
 

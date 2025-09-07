@@ -48,4 +48,36 @@
     <string name="topics_unsubscribed">Unsubscribed from topic: `%s`</string>
     <string name="presence_online">Online</string>
     <string name="presence_offline">Offline</string>
+
+    <!-- Connection Analysis -->
+    <string name="menu_connection_analysis">连接分析</string>
+    <string name="connection_analysis_title">连接分析</string>
+    <string name="connection_status_connected">已连接</string>
+    <string name="connection_status_disconnected">已断开</string>
+    <string name="connection_status_error">连接错误</string>
+
+    <!-- Statistics -->
+    <string name="stats_total_online_time">总在线时间</string>
+    <string name="stats_connection_count">连接次数</string>
+    <string name="stats_average_duration">平均连接时长</string>
+    <string name="stats_longest_connection">最长连接时间</string>
+    <string name="stats_today_online_time">今日在线时间</string>
+    <string name="stats_today_connections">今日连接次数</string>
+
+    <!-- Time formats -->
+    <string name="time_format_hours">%d小时</string>
+    <string name="time_format_minutes">%d分钟</string>
+    <string name="time_format_seconds">%d秒</string>
+    <string name="time_format_hours_minutes">%d小时%d分钟</string>
+    <string name="time_format_minutes_seconds">%d分钟%d秒</string>
+
+    <!-- Connection History -->
+    <string name="connection_history_title">连接历史</string>
+    <string name="connection_history_empty">暂无连接历史记录</string>
+    <string name="connection_timeline_title">连接时间线</string>
+
+    <!-- Tabs -->
+    <string name="tab_overview">概览</string>
+    <string name="tab_history">历史</string>
+    <string name="tab_charts">图表</string>
 </resources>
